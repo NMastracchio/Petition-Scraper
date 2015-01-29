@@ -8,10 +8,10 @@
 #     http://doc.scrapy.org/en/latest/topics/settings.html
 #
 
-BOT_NAME = 'mininova'
+BOT_NAME = 'petition'
 
-SPIDER_MODULES = ['mininova.spiders']
-NEWSPIDER_MODULE = 'mininova.spiders'
+SPIDER_MODULES = ['petition.spiders']
+NEWSPIDER_MODULE = 'petition.spiders'
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
-#USER_AGENT = 'mininova (+http://www.yourdomain.com)'
+#USER_AGENT = 'petition (+http://www.yourdomain.com)'

@@ -1,6 +1,6 @@
 from scrapy.contrib.spiders import CrawlSpider, Rule
 from scrapy.contrib.linkextractors import LinkExtractor
-from mininova.items import PetitionItem
+from petition.items import PetitionItem
 
 
 class PetitionCrawler(CrawlSpider):
@@ -11,7 +11,6 @@ class PetitionCrawler(CrawlSpider):
 	rules=[Rule(LinkExtractor(allow=['https:\/\/petitions.whitehouse.gov\/petition\/([\w-]*)\/\w*']),'parse_petition')]
 
 	def parse_petition(self,response):
-		self.item
 		petition=PetitionItem()
 		petition['url']=response.url
 		petition['title']=response.xpath('//h1/text()').extract()
@@ -22,21 +21,3 @@ class PetitionCrawler(CrawlSpider):
 		#petition['signaturesNeeded']
 		#petition['currentSignatures']
 		return petition
-'''import scrapy
-from mininova.items import DmozItem
-
-class DmozSpider(scrapy.Spider):
-	name='dmoz'
-	allowed_domains=['dmoz.org']
-	start_urls=[
-		'http://www.dmoz.org/Computers/Programming/Languages/Python/Books/',
-		'http://www.dmoz.org/Computers/Programming/Languages/Python/Resources/'
-	]
-
-	def parse(self,response):
-		for sel in response.xpath('//ul/li'):
-			item=DmozItem()
-			item['title']=sel.xpath('a/text()').extract()
-			item['link']=sel.xpath('a/@href').extract()
-			item['desc']=sel.xpath('text()').extract()
-			yield item'''
