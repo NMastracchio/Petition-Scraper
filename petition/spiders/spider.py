@@ -1,6 +1,7 @@
 from scrapy.contrib.spiders import CrawlSpider, Rule
 from scrapy.contrib.linkextractors import LinkExtractor
 from petition.items import PetitionItem
+import re
 
 
 class PetitionCrawler(CrawlSpider):
@@ -15,9 +16,22 @@ class PetitionCrawler(CrawlSpider):
 
 	#start_urls=['https://petitions.whitehouse.gov/petitions/popular']
 	#,'https://petitions.whitehouse.gov/petitions/more/popular/2/2/0/%20/'
-	rules = [Rule(LinkExtractor(allow = [r'petition\\\/[\w-]+\\\/[\w]+\\']),'parse_petition')]
+	def my_process_value(value):
+		m = re.search(r"petition\\\/([\w-]+\\\/[\w]+)", value)
+		if m:
+			return m.group(1)
 
-	def parse_petition(self,response):
+	def process_links(self, links):
+		#print "LINKS: %r" % type(links[0])
+		for link in links:
+			sUrl = link.url
+			sUrl = sUrl[:41] + "/" + sUrl[62:]
+			sUrl = sUrl.replace("%5C", "")
+			link.url = sUrl
+		return links
+
+	def parse_petition(self, response):
+		#print self, response
 		petition = PetitionItem()
 		petition['url'] = response.url
 		petition['title'] = response.xpath('//h1/text()').extract()
@@ -28,3 +42,9 @@ class PetitionCrawler(CrawlSpider):
 		#petition['signaturesNeeded']
 		#petition['currentSignatures']
 		return petition
+
+	rules = [
+		Rule(LinkExtractor(allow = (), process_value = my_process_value), 'parse_petition', process_links = 'process_links')
+	]
+
+	
